@@ -1,4 +1,12 @@
 import React from "react"
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+import Home from "../Page/Home/Home"
 
 class Engine extends React.Component{
   constructor(props){
@@ -12,16 +20,19 @@ class Engine extends React.Component{
   }
   render(){
     return(
-      <div>
-        <HelloWord />
-      </div>
+      <Router>
+        <EngineRouter />
+      </Router>
     )
   }
 }
 export default Engine
 
-function HelloWord(){
+function EngineRouter(){
+  let location = useLocation()
   return(
-    <p>HelloWord</p>
+    <Routes location={location}>
+      <Route path="/" exact  element={<Home/>}/>
+    </Routes>
   )
 }
