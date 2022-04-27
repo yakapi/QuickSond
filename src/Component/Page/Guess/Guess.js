@@ -6,7 +6,8 @@ class Guess extends React.Component{
     this.state = {
       "stape": false,
       "guess_array": [],
-      "error": ""
+      "error": "",
+      "result": false
     }
   }
   nameStape = (e) => {
@@ -28,13 +29,47 @@ class Guess extends React.Component{
       this.setState({"stape": true})
     }
   }
+  answerStape = (e) => {
+    function isEmpty(str) {
+      return (!str || str.length === 0 );
+    }
+    e.preventDefault()
+    if (isEmpty(e.target[0].value)) {
+      this.setState({"error": "Veuillez remplir le champ"})
+    }else {
+      if (!isEmpty(this.state.error)) {
+        this.setState({"error": ""})
+      }
+      // array_final.push(this.state.guess_array[0])
+      // array_final.push(e.target[0].value)
+      let data_to_send = {
+        "call": "add_survey",
+        "type": "guess",
+        "name": this.state.guess_array[0],
+        "answer": e.target[0].value
+      }
+      fetch('http://woogo-api.victorbarlier.fr/guess.php',{
+        method: 'post',
+        credentials: 'include',
+        headers:{
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        },
+        body: Object.entries(data_to_send).map(([k,v])=>{return k+'='+v}).join('&')
+      }).then(response => response.json()).then(data => {
+        console.log(data);
+      })
+
+
+    }
+  }
   render(){
     return(
       <div className="GuessBoard">
        <h1 className="logo lgw lwht">WG<span className="fontr">®</span></h1>
        <div className="GuessBlock">
         <div className="GuessBox">
-          {this.state.stape ? <GuessAnswer resultError={this.state.error}/> : <GuessName resultError={this.state.error} nameStape={this.nameStape} />}
+          {this.state.result ? <ResultSondage/> : this.state.stape ? <GuessAnswer answerStape={this.answerStape} resultError={this.state.error}/> : <GuessName resultError={this.state.error} nameStape={this.nameStape} />}
         </div>
        </div>
        <p className="copyright cGuess">Copyright WebProvide 2022</p>
@@ -43,7 +78,15 @@ class Guess extends React.Component{
   }
 }
 export default Guess
-
+class ResultSondage extends React.Component{
+  render(){
+    return(
+      <div >
+      <p>TEST</p>
+      </div>
+    )
+  }
+}
 function GuessName({nameStape, resultError}){
   return(
     <div>
@@ -57,10 +100,10 @@ function GuessName({nameStape, resultError}){
   )
 }
 
-function GuessAnswer({resultError}){
+function GuessAnswer({resultError, answerStape}){
   return(
     <div>
-      <form className="stapeboard">
+      <form className="stapeboard" onSubmit={answerStape}>
         <h2 className="TitleStape">Votre Question</h2>
         <input className="putSond" type="text" name="ansSond" pattern="[ a-zA-Z0-9,#?.-]+" minLength="4" maxLength="10"/>
         <p className="errorLog">{resultError}</p>

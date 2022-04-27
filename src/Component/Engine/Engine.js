@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import Home from "../Page/Home/Home"
 import Guess from "../Page/Guess/Guess"
+import SurveyGuess from "../Page/Guess/SurveyGuess"
 
 class Engine extends React.Component{
   constructor(props){
@@ -35,6 +36,7 @@ function EngineRouter(){
     <Routes location={location}>
       <Route path="/" exact  element={<Home/>}/>
       <Route path="/guess" element={<Guess/>}/>
+      <Route path="/guess/:survey" element={<SurveyGuess/>}/>
     </Routes>
   )
 }
