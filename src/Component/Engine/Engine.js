@@ -7,6 +7,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import Home from "../Page/Home/Home"
+import Guess from "../Page/Guess/Guess"
 
 class Engine extends React.Component{
   constructor(props){
@@ -33,6 +34,7 @@ function EngineRouter(){
   return(
     <Routes location={location}>
       <Route path="/" exact  element={<Home/>}/>
+      <Route path="/guess" element={<Guess/>}/>
     </Routes>
   )
 }

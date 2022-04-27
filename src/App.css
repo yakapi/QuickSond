@@ -122,3 +122,91 @@ font-family: 'Potta One', cursive;
 	color: white;
 	font-family: helvetica
 }
+.putLog{
+	padding: 5px;
+	border-radius: 5px;
+	border: 1px solid #0061a7;
+}
+.errorLog{
+	margin-bottom: 10px;
+	margin-top: 5px;
+	height: 15px;
+	font-family: helvetica;
+	color: red;
+	font-weight: bold;
+}
+.LogPos{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.SubLog{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.wSub{
+	font-family: helvetica;
+	margin: 5px;
+	margin-top: 15px;
+}
+.BlockCGV{
+	display: flex;
+	align-items: center;
+	height: 20px;
+}
+.BlockCGV label{
+	font-family: helvetica;
+}
+.subCGV{
+	margin: 0;
+	margin-right: 5px;
+}
+.GuessBoard{
+	height: 100vh;
+	background: #4D90FE;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+.lwht{
+	font-size: 28px;
+	padding: 10px;
+}
+.lwht .fontr{
+	font-size: 10px;
+}
+.cGuess{
+	text-align: center;
+}
+.GuessBlock{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.GuessBox{
+	background: white;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+	padding: 15px;
+	border-radius: 5px;
+	width: 285px;
+}
+.TitleStape{
+	color: #0061a7;
+	font-weight: bold;
+	font-family: helvetica;
+	font-size: 20px;
+	margin-bottom: 15px;
+}
+.putSond{
+	padding: 10px;
+	border: 1px solid #0061a7;
+	color: #0061a7;
+	border-radius: 5px;
+}
+.stapeboard{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
