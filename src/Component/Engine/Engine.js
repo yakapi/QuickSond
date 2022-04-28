@@ -36,7 +36,7 @@ function EngineRouter(){
     <Routes location={location}>
       <Route path="/" exact  element={<Home/>}/>
       <Route path="/guess" element={<Guess/>}/>
-      <Route path="/guess/:survey" element={<SurveyGuess/>}/>
+      <Route path="/guess/:survey" element={<SurveyGuess location={location}/>}/>
     </Routes>
   )
 }
