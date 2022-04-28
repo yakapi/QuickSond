@@ -236,3 +236,53 @@ font-family: 'Potta One', cursive;
 	font-weight: bold;
 	margin-bottom: 15px;
 }
+.radio_guest_survey{
+	display: flex;
+	justify-content: space-between;
+	font-family: helvetica;
+	border: 1px solid #0061a7;
+	padding: 5px;
+	border-radius: 5px;
+	margin-bottom: 10px;
+}
+.sub_guest_survey{
+	display: flex;
+	justify-content: flex-end;
+}
+.specm{
+	margin-bottom: 25px;
+}
+.ResultProgress{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+.ProgressSurveyBord{
+	height: 10px;
+	width: 250px;
+	border: 1px solid #0061a7;
+	border-radius: 5px;
+	position: relative;
+	overflow: hidden;
+}
+.ResultTitle{
+	font-family: helvetica;
+	color: #0061a7;
+	font-weight: bold;
+	font-size: 24px;
+	text-align: center;
+}
+.ProgressSurvey{
+	height: 10px;
+}
+.maybe{
+	background: #0061a7;
+}
+.noway{
+	background: red;
+}
+.yesway{
+	background: green;
+}

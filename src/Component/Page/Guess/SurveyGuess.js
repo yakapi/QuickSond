@@ -26,11 +26,45 @@ class SurveyGuess extends React.Component{
        <div className="SurveyBlock">
          <div className="SurveyBox">
            <h1 className="SurveyTitle">{this.state.content}?</h1>
-           <div className="GuessBox">
-             hello
+           <div className="GuessBox specm">
+             <h2 className="ResultTitle">Résultat</h2>
+               <div className="ResultProgress">
+                 <div className="ProgressSurveyBord">
+                   <div className="ProgressSurvey yesway"></div>
+                 </div>
+                 <p>👍</p>
+               </div>
+               <div className="ResultProgress">
+                 <div className="ProgressSurveyBord">
+                   <div className="ProgressSurvey noway"></div>
+                 </div>
+                 <p>👎</p>
+               </div>
+               <div className="ResultProgress">
+                 <div className="ProgressSurveyBord">
+                   <div className="ProgressSurvey maybe"></div>
+                 </div>
+                 <p>🤷‍♂️</p>
+               </div>
            </div>
            <div className="GuessBox">
-             <h2>Résultat</h2>
+             <form>
+               <label htmlFor="guest_yes" className="radio_guest_survey">
+                 <input type="radio" name="guest_response" id="guest_yes"/>
+                 <p>Oui</p>
+               </label>
+               <label htmlFor="guest_no" className="radio_guest_survey">
+                 <input type="radio" name="guest_response" id="guest_no"/>
+                 <p>Non</p>
+               </label>
+               <label htmlFor="guest_maybe" className="radio_guest_survey">
+                 <input type="radio" name="guest_response" id="guest_maybe"/>
+                 <p>Peut être</p>
+               </label>
+               <div className="sub_guest_survey">
+                 <input className="btnBoard" type="submit" name="sub_guest_survey" value="Valider"/>
+               </div>
+             </form>
            </div>
          </div>
        </div>
