@@ -1,4 +1,5 @@
 import React from 'react'
+import {Link, useLocation, useParams } from 'react-router-dom'
 
 class Guess extends React.Component{
   constructor(props){
@@ -7,7 +8,8 @@ class Guess extends React.Component{
       "stape": false,
       "guess_array": [],
       "error": "",
-      "result": false
+      "result": false,
+      "survey_link": null
     }
   }
   nameStape = (e) => {
@@ -42,9 +44,10 @@ class Guess extends React.Component{
       }
       // array_final.push(this.state.guess_array[0])
       // array_final.push(e.target[0].value)
+      let type =  "guest;"+this.state.guess_array[0]+";"+e.target[0].value
       let data_to_send = {
         "call": "add_survey",
-        "type": "guess",
+        "type": type,
         "name": this.state.guess_array[0],
         "answer": e.target[0].value
       }
@@ -58,10 +61,19 @@ class Guess extends React.Component{
         body: Object.entries(data_to_send).map(([k,v])=>{return k+'='+v}).join('&')
       }).then(response => response.json()).then(data => {
         console.log(data);
+        if (data.success) {
+          let uri = window.location.href
+          let array_uri = uri.split('/')
+          console.log(array_uri);
+          let survey_link = array_uri[0]+"//"+array_uri[2]+"/"+array_uri[3]+"/"+type
+          this.setState({"survey_link": survey_link})
+          this.setState({"result": true})
+        }
       })
-
-
     }
+  }
+  clipCopy = (e) => {
+    navigator.clipboard.writeText(this.state.survey_link)
   }
   render(){
     return(
@@ -69,7 +81,7 @@ class Guess extends React.Component{
        <h1 className="logo lgw lwht">WG<span className="fontr">®</span></h1>
        <div className="GuessBlock">
         <div className="GuessBox">
-          {this.state.result ? <ResultSondage/> : this.state.stape ? <GuessAnswer answerStape={this.answerStape} resultError={this.state.error}/> : <GuessName resultError={this.state.error} nameStape={this.nameStape} />}
+          {this.state.result ? <ResultSondage clipCopy={this.clipCopy} surveyLink={this.state.survey_link}/> : this.state.stape ? <GuessAnswer answerStape={this.answerStape} resultError={this.state.error}/> : <GuessName resultError={this.state.error} nameStape={this.nameStape} />}
         </div>
        </div>
        <p className="copyright cGuess">Copyright WebProvide 2022</p>
@@ -78,14 +90,20 @@ class Guess extends React.Component{
   }
 }
 export default Guess
-class ResultSondage extends React.Component{
-  render(){
-    return(
-      <div >
-      <p>TEST</p>
+function ResultSondage({surveyLink, clipCopy}){
+  // const location = useLocation()
+  // console.log(location);
+  return(
+    <div >
+      <div className="stapeboard">
+        <h2 className="TitleStape">Lien du Sondage</h2>
+        <div className="surveyResult">
+          <nobr><p>{surveyLink}</p></nobr>
+        </div>
+        <p className="btnBoard" onClick={clipCopy}>Copier</p>
       </div>
-    )
-  }
+    </div>
+  )
 }
 function GuessName({nameStape, resultError}){
   return(

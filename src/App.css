@@ -210,3 +210,16 @@ font-family: 'Potta One', cursive;
 	flex-direction: column;
 	align-items: center;
 }
+.surveyResult{
+	border: 1px solid #0061a7;
+	padding: 5px;
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	height: 15px;
+	margin-bottom: 10px;
+	border-radius: 5px;
+}
+.surveyResult p{
+	position: absolute;
+}
