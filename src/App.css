@@ -261,7 +261,7 @@ font-family: 'Potta One', cursive;
 }
 .ProgressSurveyBord{
 	height: 10px;
-	width: 250px;
+	width: 220px;
 	border: 1px solid #0061a7;
 	border-radius: 5px;
 	position: relative;
@@ -285,4 +285,20 @@ font-family: 'Potta One', cursive;
 }
 .yesway{
 	background: green;
+}
+.nb_result{
+	background: #4D90FE;
+	font-weight: bold;
+	font-family: helvetica;
+	color: white;
+	border-radius: 100%;
+	transform: scale(1.1);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.nb_result p{
+	font-size: 10px;
+	margin: 0;
+	padding: 3px;
 }
