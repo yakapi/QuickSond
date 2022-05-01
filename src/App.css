@@ -248,6 +248,11 @@ font-family: 'Potta One', cursive;
 .sub_guest_survey{
 	display: flex;
 	justify-content: flex-end;
+	align-items: center;
+}
+.sub_guest_survey p{
+	margin-right: 15px;
+	color: red;
 }
 .specm{
 	margin-bottom: 25px;
@@ -301,4 +306,22 @@ font-family: 'Potta One', cursive;
 	font-size: 10px;
 	margin: 0;
 	padding: 3px;
+}
+.nsurv{
+	width: 255px;
+	margin-top: 15px;
+	margin-bottom: 5px;
+}
+.validate_survey{
+	display: flex;
+	justify-content: flex-end;
+}
+.rsrv{
+	height: 150px;
+}
+.ResultForm{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 150px;
 }
