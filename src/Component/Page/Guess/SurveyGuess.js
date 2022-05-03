@@ -66,7 +66,10 @@ class SurveyView extends React.Component{
       "response_state": false,
       "response_content": [],
       "error": null,
-      "result_content": []
+      "result_content": [],
+      "yes": [0,"0px",[]],
+      "no": [0,"0px",[]],
+      "maybe": [0,"0px",[]],
     }
   }
   rstape_one = (e) => {
@@ -136,12 +139,13 @@ class SurveyView extends React.Component{
         n_result_content.push(data_to_send.name)
         n_result_content.push(data_to_send.result)
         result_content.push(n_result_content)
-        this.setState({"result_content": result_content})
+        // this.setState({"result_content": result_content})
         console.log(this.state.result_content);
       }
     })
   }
   componentDidMount(){
+    console.log(' SURVEY Mount');
     // Récupérer tous les resultat du sondage
     function isEmpty(str) {
       return (!str || str.length === 0 );
@@ -162,6 +166,46 @@ class SurveyView extends React.Component{
     survey_clean = survey.replaceAll("%20", " ")+"?"
     }
     console.log(survey_clean);
+    let data_to_send = {
+      "call": "get_result",
+      "type": survey_clean
+    }
+    console.log(data_to_send);
+    //   this.setState({"exist": false})
+    fetch('http://woogo-api.victorbarlier.fr/guess.php',{
+      method: 'post',
+      credentials: 'include',
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      },
+      body: Object.entries(data_to_send).map(([k,v])=>{return k+'='+v}).join('&')
+    }).then(response => response.json()).then(data => {
+      this.setState({"result_content": data})
+      // let yes = []
+      // let no = []
+      // let maybe = []
+      // let yes_array = []
+      // let no_array = []
+      // let maybe_array = []
+      // let nb_result = data.length
+      // for (var i = 0; i < data.length; i++) {
+      //   if (data[i].result == "yes") {
+      //     yes_array.push(data[i])
+      //   }else if (data[i].result == "no") {
+      //     no_array.push(data[i])
+      //   }else if (data[i].result == "maybe") {
+      //     maybe_array.push(data[i])
+      //   }
+      // }
+      // yes.push(yes_array.length)
+      // let y_progress_value = yes_array.length * 220 / nb_result
+      // let y_progress = progress_value.toString() + "px"
+      // yes.push(y_progress)
+      // console.log(yes_array.length);
+      // console.log(nb_result);
+    })
+
   }
   render(){
     return(
@@ -171,7 +215,7 @@ class SurveyView extends React.Component{
          <div className="SurveyBox">
            <h1 className="SurveyTitle">{this.props.content}?</h1>
            <div className="GuessBox specm">
-             <ResultSurvey result={this.state.result_content}/>
+             <ResultSurvey yes={this.state.yes} no={this.state.no} maybe={this.state.maybe} result={this.state.result_content}/>
            </div>
            <div className="GuessBox rsrv">
            {this.state.response_state ? <GuestName rstape={this.rstape_two}/> : <GuestVote error={this.state.error} rstape={this.rstape_one} />}
@@ -186,11 +230,11 @@ class SurveyView extends React.Component{
 class ResultSurvey extends React.Component{
   constructor(props){
     super(props)
-    this.state = {
-      "yes": [0,"0px",[]],
-      "no": [0,"0px",[]],
-      "maybe": [0,"0px",[]],
-    }
+
+  }
+  componentDidMount(){
+    console.log('RESULT SURVEY MOUNT');
+    console.log(this.props.result);
   }
   render(){
     return(
@@ -198,29 +242,29 @@ class ResultSurvey extends React.Component{
         <h2 className="ResultTitle">Résultat</h2>
         <div className="ResultProgress">
           <div className="ProgressSurveyBord">
-            <div className="ProgressSurvey yesway" style={{width: this.state.yes[1]}}></div>
+            <div className="ProgressSurvey yesway" style={{width: this.props.yes[1]}}></div>
           </div>
           <p>👍</p>
           <div className="nb_result">
-            <p>{this.state.yes[0]}</p>
+            <p>{this.props.yes[0]}</p>
           </div>
         </div>
         <div className="ResultProgress">
           <div className="ProgressSurveyBord">
-            <div className="ProgressSurvey noway" style={{width: this.state.no[1]}}></div>
+            <div className="ProgressSurvey noway" style={{width: this.props.no[1]}}></div>
           </div>
           <p>👎</p>
           <div className="nb_result">
-            <p>{this.state.no[0]}</p>
+            <p>{this.props.no[0]}</p>
           </div>
         </div>
         <div className="ResultProgress">
           <div className="ProgressSurveyBord">
-            <div className="ProgressSurvey maybe" style={{width: this.state.maybe[1]}}></div>
+            <div className="ProgressSurvey maybe" style={{width: this.props.maybe[1]}}></div>
           </div>
           <p>🤷‍♂️</p>
           <div className="nb_result">
-            <p>{this.state.maybe[0]}</p>
+            <p>{this.props.maybe[0]}</p>
           </div>
         </div>
       </div>
