@@ -132,15 +132,26 @@ class SurveyView extends React.Component{
       console.log(data);
       if (data.success) {
         this.setState({"response_state": false})
-        console.log(data_to_send);
-        let result_content = this.state.result_content
-        let n_result_content = []
-        n_result_content.push(data_to_send.type)
-        n_result_content.push(data_to_send.name)
-        n_result_content.push(data_to_send.result)
-        result_content.push(n_result_content)
-        // this.setState({"result_content": result_content})
-        console.log(this.state.result_content);
+          function where_push(here, where, data, nbMax){
+            let actual_state = here
+            let n_state = []
+            let nb_of = actual_state[0] + 1
+            let size_of_int = nb_of * 220 / nbMax
+            let size_of = size_of_int.toString() + "px"
+            let n_name_array = actual_state[2]
+            n_name_array.push(data.name)
+            n_state.push(nb_of)
+            n_state.push(size_of)
+            n_state.push(n_name_array)
+            return n_state
+          }
+          if (data_to_send.result == "yes") {
+            this.setState({"yes": where_push(this.state.yes, "yes", data_to_send, this.state.max_result)})
+          }else if (data_to_send.result == "no") {
+            this.setState({"no": where_push(this.state.no, "no", data_to_send, this.state.max_result)})
+          }else if (data_to_send.result == "maybe") {
+            this.setState({"maybe": where_push(this.state.maybe, "maybe", data_to_send, this.state.max_result)})
+          }
       }
     })
   }
@@ -181,29 +192,52 @@ class SurveyView extends React.Component{
       },
       body: Object.entries(data_to_send).map(([k,v])=>{return k+'='+v}).join('&')
     }).then(response => response.json()).then(data => {
-      this.setState({"result_content": data})
-      // let yes = []
-      // let no = []
-      // let maybe = []
-      // let yes_array = []
-      // let no_array = []
-      // let maybe_array = []
-      // let nb_result = data.length
-      // for (var i = 0; i < data.length; i++) {
-      //   if (data[i].result == "yes") {
-      //     yes_array.push(data[i])
-      //   }else if (data[i].result == "no") {
-      //     no_array.push(data[i])
-      //   }else if (data[i].result == "maybe") {
-      //     maybe_array.push(data[i])
-      //   }
-      // }
-      // yes.push(yes_array.length)
-      // let y_progress_value = yes_array.length * 220 / nb_result
-      // let y_progress = progress_value.toString() + "px"
-      // yes.push(y_progress)
-      // console.log(yes_array.length);
-      // console.log(nb_result);
+      // this.setState({"result_content": data})
+      let yes = []
+      let no = []
+      let maybe = []
+      let yes_array = []
+      let no_array = []
+      let maybe_array = []
+      let yes_name = []
+      let no_name = []
+      let maybe_name = []
+      let nb_result = data.length
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].result == "yes") {
+          yes_array.push(data[i])
+          yes_name.push(data[i].name)
+        }else if (data[i].result == "no") {
+          no_array.push(data[i])
+          no_name.push(data[i].name)
+        }else if (data[i].result == "maybe") {
+          maybe_array.push(data[i])
+          maybe_name.push(data[i].name)
+        }
+      }
+      let y_progress_value = yes_array.length * 220 / nb_result
+      let y_progress = y_progress_value.toString() + "px"
+      let n_progress_value = no_array.length * 220 / nb_result
+      let n_progress = n_progress_value.toString() + "px"
+      let mb_progress_value = maybe_array.length * 220 / nb_result
+      let mb_progress = mb_progress_value.toString() + "px"
+
+      yes.push(yes_array.length)
+      yes.push(y_progress)
+      yes.push(yes_name)
+
+      no.push(no_array.length)
+      no.push(n_progress)
+      no.push(no_name)
+
+      maybe.push(maybe_array.length)
+      maybe.push(mb_progress)
+      maybe.push(maybe_name)
+      this.setState({"yes": yes})
+      this.setState({"no": no})
+      this.setState({"maybe": maybe})
+      this.setState({"max_result": nb_result})
+
     })
 
   }
