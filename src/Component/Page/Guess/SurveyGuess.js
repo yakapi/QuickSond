@@ -70,6 +70,8 @@ class SurveyView extends React.Component{
       "yes": [0,"0px",[]],
       "no": [0,"0px",[]],
       "maybe": [0,"0px",[]],
+      "show_name": false,
+      "show_who": null
     }
   }
   rstape_one = (e) => {
@@ -154,6 +156,23 @@ class SurveyView extends React.Component{
           }
       }
     })
+  }
+  show_name = (e) => {
+    this.setState({"show_name": true})
+    for (var i = 0; i < e.nativeEvent.path.length - 2; i++) {
+      if (e.nativeEvent.path[i].classList.contains("ResultProgress")) {
+        if (e.nativeEvent.path[i].getAttribute("value") == "yes") {
+          this.setState({"show_who": this.state.yes[2]})
+        }else if (e.nativeEvent.path[i].getAttribute("value") == "no") {
+          this.setState({"show_who": this.state.no[2]})
+        }else if (e.nativeEvent.path[i].getAttribute("value") == "maybe") {
+          this.setState({"show_who": this.state.maybe[2]})
+        }
+      }
+    }
+  }
+  hide_name = (e) => {
+    this.setState({"show_name": false})
   }
   componentDidMount(){
     console.log(' SURVEY Mount');
@@ -244,12 +263,13 @@ class SurveyView extends React.Component{
   render(){
     return(
       <div className="GuessBoard">
+        {this.state.show_name ? <ShowName showWho={this.state.show_who} hideName={this.hide_name}/> : ""}
        <h1 className="logo lgw lwht">WG<span className="fontr">®</span></h1>
        <div className="SurveyBlock">
          <div className="SurveyBox">
            <h1 className="SurveyTitle">{this.props.content}?</h1>
            <div className="GuessBox specm">
-             <ResultSurvey yes={this.state.yes} no={this.state.no} maybe={this.state.maybe} result={this.state.result_content}/>
+             <ResultSurvey showName={this.show_name} yes={this.state.yes} no={this.state.no} maybe={this.state.maybe} result={this.state.result_content}/>
            </div>
            <div className="GuessBox rsrv">
            {this.state.response_state ? <GuestName rstape={this.rstape_two}/> : <GuestVote error={this.state.error} rstape={this.rstape_one} />}
@@ -257,6 +277,19 @@ class SurveyView extends React.Component{
          </div>
        </div>
        <p className="copyright cGuess">Copyright WebProvide 2022</p>
+      </div>
+    )
+  }
+}
+class ShowName extends React.Component{
+  // SHOW WHO A AFFICHER AVEC BOUCLE JSX
+  render(){
+    return(
+      <div className="ShowNameBox">
+        <p>Hello world</p>
+        <div className="btnUP">
+          <p onClick={this.props.hideName}>^</p>
+        </div>
       </div>
     )
   }
@@ -274,7 +307,7 @@ class ResultSurvey extends React.Component{
     return(
       <div>
         <h2 className="ResultTitle">Résultat</h2>
-        <div className="ResultProgress">
+        <div className="ResultProgress" onClick={this.props.showName} value="yes">
           <div className="ProgressSurveyBord">
             <div className="ProgressSurvey yesway" style={{width: this.props.yes[1]}}></div>
           </div>
@@ -283,7 +316,7 @@ class ResultSurvey extends React.Component{
             <p>{this.props.yes[0]}</p>
           </div>
         </div>
-        <div className="ResultProgress">
+        <div className="ResultProgress" onClick={this.props.showName} value="no">
           <div className="ProgressSurveyBord">
             <div className="ProgressSurvey noway" style={{width: this.props.no[1]}}></div>
           </div>
@@ -292,7 +325,7 @@ class ResultSurvey extends React.Component{
             <p>{this.props.no[0]}</p>
           </div>
         </div>
-        <div className="ResultProgress">
+        <div className="ResultProgress" onClick={this.props.showName} value="maybe">
           <div className="ProgressSurveyBord">
             <div className="ProgressSurvey maybe" style={{width: this.props.maybe[1]}}></div>
           </div>
