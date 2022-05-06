@@ -71,7 +71,9 @@ class SurveyView extends React.Component{
       "no": [0,"0px",[]],
       "maybe": [0,"0px",[]],
       "show_name": false,
-      "show_who": null
+      "show_who": null,
+      "message_box": false,
+      "loader": true
     }
   }
   rstape_one = (e) => {
@@ -96,6 +98,7 @@ class SurveyView extends React.Component{
   }
   rstape_two = (e) => {
     e.preventDefault()
+    this.setState({"message_box": true})
     function isEmpty(str) {
       return (!str || str.length === 0 );
     }
@@ -115,9 +118,7 @@ class SurveyView extends React.Component{
     survey_clean = survey.replaceAll("%20", " ")+"?"
     }
     let data_to_send = {
-      "call": "add_result",
-      "result": this.state.response_content[0],
-      "name": e.target[0].value,
+      "call": "get_result",
       "type": survey_clean
     }
     console.log(data_to_send);
@@ -130,30 +131,57 @@ class SurveyView extends React.Component{
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
       },
       body: Object.entries(data_to_send).map(([k,v])=>{return k+'='+v}).join('&')
-    }).then(response => response.json()).then(data => {
-      console.log(data);
-      if (data.success) {
-        this.setState({"response_state": false})
-          function where_push(here, where, data, nbMax){
-            let actual_state = here
-            let n_state = []
-            let nb_of = actual_state[0] + 1
-            let size_of_int = nb_of * 220 / nbMax
-            let size_of = size_of_int.toString() + "px"
-            let n_name_array = actual_state[2]
-            n_name_array.push(data.name)
-            n_state.push(nb_of)
-            n_state.push(size_of)
-            n_state.push(n_name_array)
-            return n_state
+    }).then(response => response.json()).then(data =>{
+      let check_result = true
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].name == e.target[0].value) {
+            check_result = false
+        }
+      }
+      if (check_result) {
+        console.log('LE NOM N"EXISTE PAS');
+        let data_to_send = {
+          "call": "add_result",
+          "result": this.state.response_content[0],
+          "name": e.target[0].value,
+          "type": survey_clean
+        }
+        //   this.setState({"exist": false})
+        fetch('http://woogo-api.victorbarlier.fr/guess.php',{
+          method: 'post',
+          credentials: 'include',
+          headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+          },
+          body: Object.entries(data_to_send).map(([k,v])=>{return k+'='+v}).join('&')
+        }).then(response => response.json()).then(data => {
+          if (data.success) {
+            this.setState({"response_state": false})
+            function where_push(here, where, data, nbMax){
+              let actual_state = here
+              let n_state = []
+              let nb_of = actual_state[0] + 1
+              let size_of_int = nb_of * 220 / nbMax
+              let size_of = size_of_int.toString() + "px"
+              let n_name_array = actual_state[2]
+              n_name_array.push(data.name)
+              n_state.push(nb_of)
+              n_state.push(size_of)
+              n_state.push(n_name_array)
+              return n_state
+            }
+            if (data_to_send.result == "yes") {
+              this.setState({"yes": where_push(this.state.yes, "yes", data_to_send, this.state.max_result)})
+            }else if (data_to_send.result == "no") {
+              this.setState({"no": where_push(this.state.no, "no", data_to_send, this.state.max_result)})
+            }else if (data_to_send.result == "maybe") {
+              this.setState({"maybe": where_push(this.state.maybe, "maybe", data_to_send, this.state.max_result)})
+            }
           }
-          if (data_to_send.result == "yes") {
-            this.setState({"yes": where_push(this.state.yes, "yes", data_to_send, this.state.max_result)})
-          }else if (data_to_send.result == "no") {
-            this.setState({"no": where_push(this.state.no, "no", data_to_send, this.state.max_result)})
-          }else if (data_to_send.result == "maybe") {
-            this.setState({"maybe": where_push(this.state.maybe, "maybe", data_to_send, this.state.max_result)})
-          }
+        })
+      }else {
+        console.log(' SI LE NOM EXISTE DEJA ');
       }
     })
   }
@@ -264,6 +292,7 @@ class SurveyView extends React.Component{
     return(
       <div className="GuessBoard">
         {this.state.show_name ? <ShowName showWho={this.state.show_who} hideName={this.hide_name}/> : ""}
+        {this.state.message_box ? <ResultMessage loader={this.state.loader} /> : ""}
        <h1 className="logo lgw lwht">WG<span className="fontr">®</span></h1>
        <div className="SurveyBlock">
          <div className="SurveyBox">
@@ -281,12 +310,45 @@ class SurveyView extends React.Component{
     )
   }
 }
+class ResultMessage extends React.Component{
+  render(){
+    return(
+      <div className="ResultMessageContainer">
+        <div className="ResultMessageBox">
+          {this.props.loader ? <Loader /> : <ResultMessageContent />}
+        </div>
+      </div>
+    )
+  }
+}
+class Loader extends React.Component{
+  render(){
+    return(
+      <div className="Loader">
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        <p>Chargement</p>
+    </div>
+    )
+  }
+}
+class ResultMessageContent extends React.Component{
+  render(){
+    return(
+      <div className="ResultMessageContent">
+        ResultMessageContent
+      </div>
+    )
+  }
+}
 class ShowName extends React.Component{
-  // SHOW WHO A AFFICHER AVEC BOUCLE JSX
   render(){
     return(
       <div className="ShowNameBox">
-        <p>Hello world</p>
+        {this.props.showWho.map((name) => (
+          <p className="NameResult" key={name}>
+            {name}
+          </p>
+        ))}
         <div className="btnUP">
           <p onClick={this.props.hideName}>^</p>
         </div>
