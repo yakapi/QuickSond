@@ -1,17 +1,21 @@
 import React from 'react'
-
+import Loader from "../../Loader/Loader"
 class SurveyGuess extends React.Component{
   constructor(props){
     super(props)
     this.state = {
       "content": null,
-      "exist": null
+      "exist": null,
+      "loader": true
     }
   }
   componentDidMount(){
+    console.log("FUCK IS MOUNT");
     function isEmpty(str) {
       return (!str || str.length === 0 );
-    }let url_survey = this.props.location.pathname
+    }
+    let url_survey = this.props.location.pathname
+    console.log(url_survey);
     let array_uri = url_survey.split(';')
     let answer_string = array_uri[2]
     if (!isEmpty(answer_string)) {
@@ -23,12 +27,12 @@ class SurveyGuess extends React.Component{
     }
     let survey_array = url_survey.split("/")
     let survey = survey_array[2]
-    let survey_clean = survey.replaceAll("%20", " ")+"?"
+    let survey_clean = survey.replaceAll("%20", " ")
+    console.log(survey_clean);
     let data_to_send = {
       "call": "exist_survey",
       "survey": survey_clean
     }
-    //   this.setState({"exist": false})
     fetch('http://woogo-api.victorbarlier.fr/guess.php',{
       method: 'post',
       credentials: 'include',
@@ -39,20 +43,25 @@ class SurveyGuess extends React.Component{
       body: Object.entries(data_to_send).map(([k,v])=>{return k+'='+v}).join('&')
     }).then(response => response.json()).then(data => {
       console.log(data);
+      console.log("JE SSUIS PAS LAAA");
       if (data.success) {
         this.setState({"content": answer})
         this.setState({"exist": true})
       }else {
+        console.log("JE SUIS LAAAAAAAAAA");
         this.setState({"exist": false})
+        this.setState({"loader": false})
       }
 
     })
+  }else {
+    this.setState({"loader": false})
   }
   }
   render(){
     return(
       <div>
-        {this.state.exist ? <SurveyView location={this.props.location} content={this.state.content} /> : <ReturnHome/>}
+        {this.state.exist ? <SurveyView location={this.props.location} content={this.state.content} /> : <ReturnHome loader={this.state.loader}/>}
       </div>
     )
   }
@@ -73,7 +82,8 @@ class SurveyView extends React.Component{
       "show_name": false,
       "show_who": null,
       "message_box": false,
-      "loader": true
+      "loader": true,
+      "message_text": null
     }
   }
   rstape_one = (e) => {
@@ -178,10 +188,23 @@ class SurveyView extends React.Component{
             }else if (data_to_send.result == "maybe") {
               this.setState({"maybe": where_push(this.state.maybe, "maybe", data_to_send, this.state.max_result)})
             }
+            this.setState({"message_text": "Votre vote est validé"})
+            this.setState({"loader": false})
+            this.setState({"response_state": false})
+            setTimeout(()=>{
+              this.setState({"message_box": false})
+              this.setState({"loader": false})
+            }, 2000)
           }
         })
       }else {
-        console.log(' SI LE NOM EXISTE DEJA ');
+        this.setState({"message_text": "Le nom existe déjà"})
+        this.setState({"loader": false})
+        this.setState({"response_state": false})
+        setTimeout(()=>{
+          this.setState({"message_box": false})
+          this.setState({"loader": false})
+        }, 2000)
       }
     })
   }
@@ -292,7 +315,7 @@ class SurveyView extends React.Component{
     return(
       <div className="GuessBoard">
         {this.state.show_name ? <ShowName showWho={this.state.show_who} hideName={this.hide_name}/> : ""}
-        {this.state.message_box ? <ResultMessage loader={this.state.loader} /> : ""}
+        {this.state.message_box ? <ResultMessage message={this.state.message_text} loader={this.state.loader} /> : ""}
        <h1 className="logo lgw lwht">WG<span className="fontr">®</span></h1>
        <div className="SurveyBlock">
          <div className="SurveyBox">
@@ -315,27 +338,18 @@ class ResultMessage extends React.Component{
     return(
       <div className="ResultMessageContainer">
         <div className="ResultMessageBox">
-          {this.props.loader ? <Loader /> : <ResultMessageContent />}
+          {this.props.loader ? <Loader /> : <ResultMessageContent message={this.props.message}/>}
         </div>
       </div>
     )
   }
 }
-class Loader extends React.Component{
-  render(){
-    return(
-      <div className="Loader">
-        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-        <p>Chargement</p>
-    </div>
-    )
-  }
-}
+
 class ResultMessageContent extends React.Component{
   render(){
     return(
       <div className="ResultMessageContent">
-        ResultMessageContent
+        <p>{this.props.message}</p>
       </div>
     )
   }
@@ -443,15 +457,24 @@ class ReturnHome extends React.Component{
   render(){
     return(
       <div className="GuessBoard">
-       <h1 className="logo lgw lwht">WG<span className="fontr">®</span></h1>
-       <div className="SurveyBlock">
-         <div className="SurveyBox">
-           <div className="GuessBox specm">
-             <h2 className="ResultTitle">Le Sondage n'existe plus</h2>
-           </div>
-         </div>
-       </div>
-       <p className="copyright cGuess">Copyright WebProvide 2022</p>
+      <h1 className="logo lgw lwht">WG<span className="fontr">®</span></h1>
+      <div className="SurveyBlock">
+      <div className="SurveyBox">
+      <div className="GuessBox specm flc">
+      {this.props.loader ? <Loader /> : <ReturnMessage />}
+      </div>
+      </div>
+      </div>
+      <p className="copyright cGuess">Copyright WebProvide 2022</p>
+      </div>
+    )
+  }
+}
+class ReturnMessage extends React.Component{
+  render(){
+    return(
+      <div>
+        <h2 className="ResultTitle">Le Sondage n'existe plus</h2>
       </div>
     )
   }
