@@ -49,7 +49,11 @@ class Guess extends React.Component{
       // array_final.push(this.state.guess_array[0])
       // array_final.push(e.target[0].value)
       console.log(e.target[0].value);
-      let type_exist =  "guest;"+this.state.guess_array[0]+";"+e.target[0].value
+      let ans = e.target[0].value
+      if (e.target[0].value.includes("?")) {
+        ans = e.target[0].value.replaceAll("?","")
+      }
+      let type_exist =  "guest;"+this.state.guess_array[0]+";"+ans
       console.log(type_exist);
       let data_to_send = {
         "call": "exist_survey",
@@ -69,7 +73,11 @@ class Guess extends React.Component{
           this.setState({"loader": false})
         }else {
           this.setState({"response_test": false})
-          let type =  "guest;"+this.state.guess_array[0]+";"+e.target[0].value
+          let as = e.target[0].value
+          if (e.target[0].value.includes('?')) {
+            as = e.target[0].value.replaceAll('?', '')
+          }
+          let type =  "guest;"+this.state.guess_array[0]+";"+as
           let data_to_send = {
               "call": "add_survey",
               "type": type,
