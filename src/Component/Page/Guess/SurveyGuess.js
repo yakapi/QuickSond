@@ -83,7 +83,8 @@ class SurveyView extends React.Component{
       "show_who": null,
       "message_box": false,
       "loader": true,
-      "message_text": null
+      "message_text": null,
+      "max_result": 0
     }
   }
   rstape_one = (e) => {
@@ -168,6 +169,12 @@ class SurveyView extends React.Component{
         }).then(response => response.json()).then(data => {
           if (data.success) {
             this.setState({"response_state": false})
+            if (this.state.max_result == 0) {
+              this.setState({"max_result": 1})
+            }else {
+              let n_max_result = this.state.max_result + 1
+              this.setState({"max_result": n_max_result})
+            }
             function where_push(here, where, data, nbMax){
               let actual_state = here
               let n_state = []
@@ -181,13 +188,30 @@ class SurveyView extends React.Component{
               n_state.push(n_name_array)
               return n_state
             }
+            function update_push(here,nbMax){
+              let actual_state = here
+              let n_state = []
+              let nb_of = actual_state[0]
+              let size_of_int = nb_of * 220 / nbMax
+              let size_of = size_of_int.toString() + "px"
+              let n_name_array = actual_state[2]
+              n_state.push(nb_of)
+              n_state.push(size_of)
+              n_state.push(n_name_array)
+              return n_state
+            }
             if (data_to_send.result == "yes") {
-              console.log(where_push(this.state.yes, "yes", data_to_send, this.state.max_result));
               this.setState({"yes": where_push(this.state.yes, "yes", data_to_send, this.state.max_result)})
+              this.setState({"no": update_push(this.state.no, this.state.max_result)})
+              this.setState({"maybe": update_push(this.state.maybe, this.state.max_result)})
             }else if (data_to_send.result == "no") {
               this.setState({"no": where_push(this.state.no, "no", data_to_send, this.state.max_result)})
+              this.setState({"maybe": update_push(this.state.maybe, this.state.max_result)})
+              this.setState({"yes": update_push(this.state.yes, this.state.max_result)})
             }else if (data_to_send.result == "maybe") {
               this.setState({"maybe": where_push(this.state.maybe, "maybe", data_to_send, this.state.max_result)})
+              this.setState({"yes": update_push(this.state.yes, this.state.max_result)})
+              this.setState({"no": update_push(this.state.no, this.state.max_result)})
             }
             this.setState({"message_text": "Votre vote est validé"})
             this.setState({"loader": false})
