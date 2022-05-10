@@ -40,19 +40,11 @@ function ButtonCreate({openChoice}){
   )
 }
 class HomeChoice extends React.Component{
-  constructor(props){
-    super(props)
-    this.state = {
-      "board_choice": false
-    }
-  }
-  boardChoice = (e) => {
-    this.setState({"board_choice": true})
-  }
+
   render(){
     return(
       <div className="HomeChoice">
-        {this.state.board_choice ? <LogBoard /> : <SelectBoard boardChoice={this.boardChoice}/>}
+        <SelectBoard boardChoice={this.boardChoice}/>
       </div>
     )
   }
@@ -63,68 +55,9 @@ function SelectBoard({boardChoice}){
       <Link to="/guess">
         <p className="btnBoard">Invité</p>
       </Link>
-      <p onClick={boardChoice} className="btnBoard">Enregistré</p>
+      <Link to="/registred">
+        <p className="btnBoard">Enregistré</p>
+      </Link>
     </div>
   )
-}
-class LogBoard extends React.Component{
-  constructor(props){
-    super(props)
-    this.state = {
-      "subscribe": false
-    }
-  }
-  subscriber = (e) => {
-    this.setState({"subscribe": true})
-  }
-  render(){
-    return(
-      <div className="LogBoard">
-        {this.state.subscribe ? <SubForm /> : <LogForm subscribe={this.subscriber}/>}
-      </div>
-    )
-  }
-}
-
-class LogForm extends React.Component{
-  render(){
-    return(
-      <div className="LogForm">
-        <form className="LogPos">
-          <input className="putLog" name="logMail" type="email" placeholder="E-mail" />
-          <p className="errorLog"></p>
-          <input className="putLog" name="logPwd" type="password" placeholder="Mot de Passe" />
-          <p className="errorLog"></p>
-          <input className="btnBoard" name="logSubmit" type="submit" value="Connexion" />
-        </form>
-        <div className="SubLog">
-          <p className="wSub">Pas encore inscrit ?</p>
-          <p onClick={this.props.subscribe} className="btnBoard">Inscription</p>
-        </div>
-      </div>
-    )
-  }
-}
-class SubForm extends React.Component{
-  render(){
-    return(
-      <div className="SubForm">
-        <form className="LogPos">
-          <input className="putLog" name="subName" type="text" placeholder="Nom" />
-          <p className="errorLog"></p>
-          <input className="putLog" name="subMail" type="email" placeholder="E-mail" />
-          <p className="errorLog"></p>
-          <input className="putLog" name="subPwd" type="password" placeholder="Mot de Passe" />
-          <p className="errorLog"></p>
-          <input className="putLog" name="subPwdR" type="password" placeholder="Répéter Mot de Passe" />
-          <p className="errorLog"></p>
-          <input className="btnBoard" name="subSubmit" type="submit" value="Inscription" />
-          <div className="BlockCGV">
-            <input className="subCGV" type="radio" name="subCGV" value="Accepter les CGV" />
-            <label htmlFor="subCGV">Accepter les CGV</label>
-          </div>
-        </form>
-      </div>
-    )
-  }
 }
